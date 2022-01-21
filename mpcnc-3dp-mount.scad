@@ -21,7 +21,8 @@ offsetx = 0;
 
 mount_inner_d = 55;
 
-
+m5d = 5.1;
+m5d_cap = 9.5;
 
 module stepper_motors()
     rotate([0, 0, 90])
@@ -65,6 +66,7 @@ module support() {
         }
 
         union() {
+            color([1, 1, 0.5])
             union() {
                 translate([-21, -21-4, -34])
                     SmoothXYCube([28, 4, 34+7.5], 2);
@@ -75,13 +77,19 @@ module support() {
             }
     
             union() {
-                color([1, 0, 0])
-                translate([-21, -21-4, -34-4])
-                    SmoothXYCube([28, 4, 4], 2);
-                
+                support_insert();
+                support_insert_stop();
             }
             
+            mirror([0, 1, 0])
+            union() {
+                support_insert();
+                support_insert_stop();
+            }
         }
+        
+        
+        
     }
     
     /*
@@ -104,8 +112,75 @@ module support() {
     
 }
 
+stopx = 21;
+stopy = 28;
+stopz = 34;
+stopw = 4;
+stopt = 3;
+stop_gap = 1.33;
+
+module support_insert_stop() {
+    
+}
 
 
+module support_insert() {
+    difference() {
+        union() {
+            union() {
+                difference() {
+                    color([1, 0, 0])
+                    translate([-stopx, -stopx-stopw, -stopz-stopt])
+                        SmoothXYCube([stopy, stopw, stopt], 2);
+                    
+                    translate([-stopx-2/2+8/2, -stopx-stopw/2-stop_gap/2, -stopz-stopw-4])
+                        cube([stopy+2-8, stop_gap, stopw+4]);
+                    
+                }
+                
+                difference() {
+                    difference() {
+                        difference() {
+                            color([1, 0.5, 0.5])
+                            rotate([0, 90, 0])
+                            translate([stopz + 0.8, -stopx-stopw-stop_gap/2, -stopx-stop_gap/2])
+                                SmoothCube([stopt+1, stopw+stop_gap, stopy+stop_gap], 2);
+                        
+                            translate([-stopx-2/2, (-stopx-stopw/2-stop_gap/2)-stopw+stop_gap, -stopz-stopw-2])
+                                cube([stopy+2, stopw, stopw+2]);
+                        }
+                    
+                        translate([-stopx-0.5*2, -stopx-stopw-3.3/2, -stopz-stopt])
+                            cube([stopy+2, stopw+3.3, stopt], 2);
+                        
+                    }
+                
+                    color([0, 1, 0.5])
+                    union() {
+                        translate([-stopx+stop_gap*2-10, -stopx-stopw-3.3/2, -stopz-6])
+                            cube([stop_gap+10, stopw+3.3, 10], 2);
+                    
+                    
+                        translate([stopy-stopx-stop_gap*(1+2), -stopx-stopw-3.3/2, -stopz-6])
+                            cube([stop_gap+10, stopw+3.3, 10], 2);
+                    }
+                }
+            }
+        }
+        
+        //*
+        color([0, 1, 0.5])
+        union() {
+            translate([-stopx+stop_gap*2, -stopx-stopw-3.3/2, -stopz-8])
+                cube([stop_gap, stopw+3.3, 12], 2);
+        
+        
+            translate([stopy-stopx-stop_gap*(1+2), -stopx-stopw-3.3/2, -stopz-8])
+                cube([stop_gap, stopw+3.3, 12], 2);
+        }
+    }
+    //*/
+}
 
 module mount() {
     /*
@@ -207,14 +282,15 @@ module mount() {
         union() {
             translate([offsetx+8.5, -34.3, mh/2])
             rotate([0, -90, 0])
-            cylinder(d=5.5, h=20);
+            cylinder(d=m5d, h=20);
             
             mirror([0, 1, 0])
             translate([offsetx+8.5, -34.3, mh/2])
             rotate([0, -90, 0])
-            cylinder(d=5.5, h=20);
+            cylinder(d=m5d, h=20);
         }
     }
+    
 }
 
 module extruder_with_filament() {
@@ -236,84 +312,133 @@ module middle_hshape() {
     middle_h = 26;
     middle_y = -55/2-13.5;
     middle_z = middle_h/2;
+    middle_t = 3;
 
     difference() {
-        color([1, 1, 1])
-        union() {
-            //color([1, 0, 1])
-            translate([5, middle_y, 0])
-            rotate([90, 0, 90])
-            SmoothXYCube([14.5, 69.9+15, 2], 2);
+        difference() {
+            difference() {
+                color([1, 1, 1])
+                union() {
+                    //color([1, 0, 1])
+                    translate([5, middle_y, 0])
+                    rotate([90, 0, 90])
+                    SmoothXYCube([14.5, 69.9+15, middle_t], 2);
 
-            //color([1, 0, 1])
-            mirror([0, 1, 0])
-            translate([5, middle_y, 0])
-            rotate([90, 0, 90])
-            SmoothXYCube([14.5, 69.9+15, 2], 2);
+                    //color([1, 0, 1])
+                    mirror([0, 1, 0])
+                    translate([5, middle_y, 0])
+                    rotate([90, 0, 90])
+                    SmoothXYCube([14.5, 69.9+15, middle_t], 2);
 
-            translate([0, 0, (69.9+15)/2])
+                    translate([0, 0, (69.9+15)/2])
+                    union() {
+                        //color([1, 0, 0])
+                        translate([5, -(middle_w+4)/2, middle_z])
+                        rotate([0, 90, 0])
+                        SmoothXYCube([middle_h, middle_w+4, middle_t], 2);
+                        
+                        translate([0, 0, -middle_h])
+                        difference() {
+                            //color([1, 1, 0])
+                            translate([5, -middle_w/2-2, middle_z])
+                            rotate([0, 90, 0])
+                            SmoothXYCube([10, middle_w+4, middle_t], 2);
+                            
+                            //color([0, 1, 0])
+                            translate([5-1, -middle_w/2, middle_z-5])
+                            rotate([0, 90, 0])
+                            SmoothXYCube([middle_h, middle_w, middle_t*2], 2);
+                        }
+                        
+                        mirror([0, 0, 1])
+                        translate([0, 0, -middle_h])
+                        difference() {
+                            //color([1, 1, 0])
+                            translate([5, -middle_w/2-middle_t, middle_z])
+                            rotate([0, 90, 0])
+                            SmoothXYCube([10, middle_w+middle_t*2, middle_t], 2);
+                            
+                            //color([0, 1, 0])
+                            translate([5-1, -middle_w/2, middle_z-5])
+                            rotate([0, 90, 0])
+                            SmoothXYCube([middle_h, middle_w, middle_t*2], 2);
+                        }
+                    }
+                }
+                
+                //screw
+                union() {
+                    color([0, 1, 1])
+                    translate([0, -(middle_w-20)/2, 28/2+42])
+                        rotate([0, 90, 0])
+                        SmoothXYCube([28, middle_w-20, 10], 2);
+                    
+                    color([0, 1, 0])
+                    translate([0, -(55+14+middle_t*2)/2, 28/2+42])
+                        rotate([0, 90, 0])
+                        SmoothXYCube([28, 7, 10], 2);
+                    
+                    mirror([0, 1, 0])
+                    color([0, 1, 0])
+                    translate([0, -(55+14+middle_t*2)/2, 28/2+42])
+                        rotate([0, 90, 0])
+                        SmoothXYCube([28, 7, 10], 2);
+                    
+                    color([0, 1, 0])
+                    translate([0, -stopw-42/2, 28/2+42])
+                        rotate([0, 90, 0])
+                        SmoothXYCube([28, stopw, 10], 2);
+                    
+                    mirror([0, 1, 0])
+                    color([0, 1, 0])
+                    translate([0, -stopw-42/2, 28/2+42])
+                        rotate([0, 90, 0])
+                        SmoothXYCube([28, stopw, 10], 2);
+                }
+            }
+            
+            //screw cap
             union() {
-                //color([1, 0, 0])
-                translate([5, -(middle_w+4)/2, middle_z])
-                rotate([0, 90, 0])
-                SmoothXYCube([middle_h, middle_w+4, 2], 2);
+                translate([offsetx+13.3, -34.3, mh/2])
+                rotate([0, -90, 0])
+                cylinder(d=m5d, h=20);
                 
-                translate([0, 0, -middle_h])
-                difference() {
-                    //color([1, 1, 0])
-                    translate([5, -middle_w/2-2, middle_z])
-                    rotate([0, 90, 0])
-                    SmoothXYCube([10, middle_w+4, 2], 2);
-                    
-                    //color([0, 1, 0])
-                    translate([5-1, -middle_w/2, middle_z-5])
-                    rotate([0, 90, 0])
-                    SmoothXYCube([middle_h, middle_w, 4], 2);
-                }
+                mirror([0, 1, 0])
+                translate([offsetx+13.3, -34.3, mh/2])
+                rotate([0, -90, 0])
+                cylinder(d=m5d, h=20);
                 
-                mirror([0, 0, 1])
-                translate([0, 0, -middle_h])
-                difference() {
-                    //color([1, 1, 0])
-                    translate([5, -middle_w/2-2, middle_z])
-                    rotate([0, 90, 0])
-                    SmoothXYCube([10, middle_w+4, 2], 2);
-                    
-                    //color([0, 1, 0])
-                    translate([5-1, -middle_w/2, middle_z-5])
-                    rotate([0, 90, 0])
-                    SmoothXYCube([middle_h, middle_w, 4], 2);
-                }
+                
+                translate([offsetx+13.3, -34.3, mh/2+69.9])
+                rotate([0, -90, 0])
+                cylinder(d=m5d, h=20);
+                
+                mirror([0, 1, 0])
+                translate([offsetx+13.3, -34.3, mh/2+69.9])
+                rotate([0, -90, 0])
+                cylinder(d=m5d, h=20);
             }
         }
         
         union() {
-            color([0, 1, 1])
-            translate([0, -(middle_w-20)/2, 28/2+42])
-                rotate([0, 90, 0])
-                SmoothXYCube([28, middle_w-20, 10], 2);
-            
-            color([0, 1, 1])
-            translate([0, -(55+14+4)/2, 28/2+42])
-                rotate([0, 90, 0])
-                SmoothXYCube([28, 7, 10], 2);
+            translate([offsetx+13.3-middle_t-0.5, -34.3, mh/2])
+            rotate([0, -90, 0])
+            cylinder(d=m5d_cap, h=middle_t);
             
             mirror([0, 1, 0])
-            color([0, 1, 1])
-            translate([0, -(55+14+4)/2, 28/2+42])
-                rotate([0, 90, 0])
-                SmoothXYCube([28, 7, 10], 2);
+            translate([offsetx+13.3-middle_t-0.5, -34.3, mh/2])
+            rotate([0, -90, 0])
+            cylinder(d=m5d_cap, h=middle_t);
             
-            color([0, 1, 1])
-            translate([0, -4-42/2, 28/2+42])
-                rotate([0, 90, 0])
-                SmoothXYCube([28, 4, 10], 2);
+            
+            translate([offsetx+13.3-middle_t-0.5, -34.3, mh/2+69.9])
+            rotate([0, -90, 0])
+            cylinder(d=m5d_cap, h=middle_t);
             
             mirror([0, 1, 0])
-            color([0, 1, 1])
-            translate([0, -4-42/2, 28/2+42])
-                rotate([0, 90, 0])
-                SmoothXYCube([28, 4, 10], 2);
+            translate([offsetx+13.3-middle_t-0.5, -34.3, mh/2+69.9])
+            rotate([0, -90, 0])
+            cylinder(d=m5d_cap, h=middle_t);
         }
     }
 }
@@ -321,13 +446,14 @@ module middle_hshape() {
 if($preview)
     let($show_threads = 1)
 
-        
-        translate([33.8+25, 0, 69.9/2])
+        /*
+        translate([33.8+5+14.2, 0, 69.9/2])
         rotate([0, 90, 0])
         group_motor();
 
         middle_hshape();
-        
+        */
+
         translate([0, 0, 0])
         mount();
 
