@@ -21,8 +21,8 @@ offsetx = 0;
 
 mount_inner_d = 55;
 
-m5d = 5.1;
-m5d_cap = 9.5;
+m3d = 3;
+m3d_cap = 5.7;
 
 module stepper_motors()
     rotate([0, 0, 90])
@@ -68,12 +68,12 @@ module support() {
         union() {
             color([1, 1, 0.5])
             union() {
-                translate([-21, -21-4, -34])
-                    SmoothXYCube([28, 4, 34+7.5], 2);
+                translate([-21, -21-4-2, -34])
+                    SmoothXYCube([28, 4+2, 34+7.5], 2);
                 
                 mirror([0, 1, 0])
-                translate([-21, -21-4, -34])
-                    SmoothXYCube([28, 4, 34+7.5], 2);
+                translate([-21, -21-4-2, -34])
+                    SmoothXYCube([28, 4+2, 34+7.5], 2);
             }
     
             union() {
@@ -204,14 +204,16 @@ module mount() {
                         }
                         
                         
-                        /*
+                        //*
                         translate([translatex, -90/2, 0])
                             cube([tw, 90, mh]);
                         //*/
                         
+                        /*
                         translate([translatex, -82/2, mh])
                         rotate([0, 90, 0])
                             SmoothXYCube([mh, 82, tw], 2);
+                        //*/
                         
                     }
                 
@@ -231,21 +233,21 @@ module mount() {
                     }
                 }
                 
-                translate([-18.3, 0, mh/2])
+                translate([-19.3, 0, mh/2])
                 union() {
                     rotate([0, 0, -45])
                     translate([translatex, tw, 0])
                     union() {
                         rotate([0, 90, 0])
-                        translate([0, -0.5, 0])
+                        translate([0, -1, 0])
                         cylinder(sqrt(2*tw^2), d=5, center=false);
                         
                         rotate([0, 90, 0])
-                        translate([0, 0.5, 0])
+                        translate([0, 1, 0])
                         cylinder(sqrt(2*tw^2), d=5, center=false);
                         
-                        translate([0, -0.25, -2.5])
-                        cube([sqrt(2*tw^2), 0.5, 5]);
+                        translate([0, -1, -2.5])
+                        cube([sqrt(2*tw^2), 2, 5]);
                     }
                     
                     
@@ -254,15 +256,15 @@ module mount() {
                     translate([translatex, tw, 0])
                     union() {
                         rotate([0, 90, 0])
-                        translate([0, -0.5, 0])
+                        translate([0, -1, 0])
                         cylinder(sqrt(2*tw^2), d=5, center=false);
                         
                         rotate([0, 90, 0])
-                        translate([0, 0.5, 0])
+                        translate([0, 1, 0])
                         cylinder(sqrt(2*tw^2), d=5, center=false);
                         
-                        translate([0, -0.25, -2.5])
-                        cube([sqrt(2*tw^2), 0.5, 5]);
+                        translate([0, -1, -2.5])
+                        cube([sqrt(2*tw^2), 2, 5]);
                     }
                 }
             }
@@ -270,24 +272,24 @@ module mount() {
             union() {
                 translate([offsetx-1.5, -34.3, mh/2])
                 rotate([0, -90, 0])
-                cylinder(d=10, h=20, $fn=6);
+                cylinder(d=m3d_cap, h=20, $fn=6);
                 
                 mirror([0, 1, 0])
                 translate([offsetx-1.5, -34.3, mh/2])
                 rotate([0, -90, 0])
-                cylinder(d=10, h=20, $fn=6);
+                cylinder(d=m3d_cap, h=20, $fn=6);
             }
         }
         
         union() {
             translate([offsetx+8.5, -34.3, mh/2])
             rotate([0, -90, 0])
-            cylinder(d=m5d, h=20);
+            cylinder(d=m3d, h=20);
             
             mirror([0, 1, 0])
             translate([offsetx+8.5, -34.3, mh/2])
             rotate([0, -90, 0])
-            cylinder(d=m5d, h=20);
+            cylinder(d=m3d, h=20);
         }
     }
     
@@ -401,44 +403,44 @@ module middle_hshape() {
             union() {
                 translate([offsetx+13.3, -34.3, mh/2])
                 rotate([0, -90, 0])
-                cylinder(d=m5d, h=20);
+                cylinder(d=m3d, h=20);
                 
                 mirror([0, 1, 0])
                 translate([offsetx+13.3, -34.3, mh/2])
                 rotate([0, -90, 0])
-                cylinder(d=m5d, h=20);
+                cylinder(d=m3d, h=20);
                 
                 
                 translate([offsetx+13.3, -34.3, mh/2+69.9])
                 rotate([0, -90, 0])
-                cylinder(d=m5d, h=20);
+                cylinder(d=m3d, h=20);
                 
                 mirror([0, 1, 0])
                 translate([offsetx+13.3, -34.3, mh/2+69.9])
                 rotate([0, -90, 0])
-                cylinder(d=m5d, h=20);
+                cylinder(d=m3d, h=20);
             }
         }
         
         union() {
             translate([offsetx+13.3-middle_t-0.5, -34.3, mh/2])
             rotate([0, -90, 0])
-            cylinder(d=m5d_cap, h=middle_t);
+            cylinder(d=m3d_cap, h=middle_t);
             
             mirror([0, 1, 0])
             translate([offsetx+13.3-middle_t-0.5, -34.3, mh/2])
             rotate([0, -90, 0])
-            cylinder(d=m5d_cap, h=middle_t);
+            cylinder(d=m3d_cap, h=middle_t);
             
             
             translate([offsetx+13.3-middle_t-0.5, -34.3, mh/2+69.9])
             rotate([0, -90, 0])
-            cylinder(d=m5d_cap, h=middle_t);
+            cylinder(d=m3d_cap, h=middle_t);
             
             mirror([0, 1, 0])
             translate([offsetx+13.3-middle_t-0.5, -34.3, mh/2+69.9])
             rotate([0, -90, 0])
-            cylinder(d=m5d_cap, h=middle_t);
+            cylinder(d=m3d_cap, h=middle_t);
         }
     }
 }
@@ -446,13 +448,13 @@ module middle_hshape() {
 if($preview)
     let($show_threads = 1)
 
-        /*
+        //*
         translate([33.8+5+14.2, 0, 69.9/2])
         rotate([0, 90, 0])
         group_motor();
 
         middle_hshape();
-        */
+        //*/
 
         translate([0, 0, 0])
         mount();
