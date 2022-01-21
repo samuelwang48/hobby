@@ -22,7 +22,7 @@ offsetx = 0;
 mount_inner_d = 55;
 
 m3d = 3;
-m3d_cap = 5.7;
+m3d_cap = 6;
 
 module stepper_motors()
     rotate([0, 0, 90])
@@ -66,26 +66,53 @@ module support() {
         }
 
         union() {
-            color([1, 1, 0.5])
+            //color([1, 1, 0.5])
             union() {
-                translate([-21, -21-4-2, -34])
-                    SmoothXYCube([28, 4+2, 34+7.5], 2);
+                difference() {
+                    translate([-21, -21-6, -34])
+                        SmoothXYCube([28, 6, 34+7.5], 2);
+                
+                    color([1, 0, 0])
+                    translate([-stopx-2/2+8/2, -stopx-stopw/2-stop_gap/2, -stopz-stopw-4])
+                        cube([stopy+2-8, stop_gap, stopw+4+34/2]);
+                    
+                    color([1, 0, 0])
+                    union() {
+                        translate([-stopx+stop_gap*2, -stopx-10/2-6/2, -stopz-8])
+                            cube([stop_gap, 10, stopw+4+34/2], 2);
+                    
+                    
+                        translate([stopy-stopx-stop_gap*(1+2), -stopx-10/2-6/2, -stopz-8])
+                            cube([stop_gap, 10, stopw+4+34/2], 2);
+                    }
+                }
+                
                 
                 mirror([0, 1, 0])
-                translate([-21, -21-4-2, -34])
-                    SmoothXYCube([28, 4+2, 34+7.5], 2);
+                difference() {
+                    translate([-21, -21-6, -34])
+                        SmoothXYCube([28, 6, 34+7.5], 2);
+                
+                    color([1, 0, 0])
+                    translate([-stopx-2/2+8/2, -stopx-stopw/2-stop_gap/2, -stopz-stopw-4])
+                        cube([stopy+2-8, stop_gap, stopw+4+34/2]);
+                    
+                    color([1, 0, 0])
+                    union() {
+                        translate([-stopx+stop_gap*2, -stopx-10/2-6/2, -stopz-8])
+                            cube([stop_gap, 10, stopw+4+34/2], 2);
+                    
+                    
+                        translate([stopy-stopx-stop_gap*(1+2), -stopx-10/2-6/2, -stopz-8])
+                            cube([stop_gap, 10, stopw+4+34/2], 2);
+                    }
+                }
             }
     
-            union() {
-                support_insert();
-                support_insert_stop();
-            }
+            support_insert();
             
             mirror([0, 1, 0])
-            union() {
                 support_insert();
-                support_insert_stop();
-            }
         }
         
         
@@ -119,9 +146,6 @@ stopw = 4;
 stopt = 3;
 stop_gap = 1.33;
 
-module support_insert_stop() {
-    
-}
 
 
 module support_insert() {
@@ -304,7 +328,7 @@ module extruder_with_filament() {
 }
 
 module group_motor() {
-    stepper_motors();
+    //stepper_motors();
     extruder_with_filament();
     support();
 }
@@ -318,7 +342,7 @@ module middle_hshape() {
 
     difference() {
         difference() {
-            difference() {
+            difference() {//difference 
                 color([1, 1, 1])
                 union() {
                     //color([1, 0, 1])
@@ -386,17 +410,18 @@ module middle_hshape() {
                         rotate([0, 90, 0])
                         SmoothXYCube([28, 7, 10], 2);
                     
-                    color([0, 1, 0])
+                    color([1, 0.5, 0])
                     translate([0, -stopw-42/2, 28/2+42])
                         rotate([0, 90, 0])
                         SmoothXYCube([28, stopw, 10], 2);
                     
                     mirror([0, 1, 0])
-                    color([0, 1, 0])
+                    color([1, 0.5, 0])
                     translate([0, -stopw-42/2, 28/2+42])
                         rotate([0, 90, 0])
                         SmoothXYCube([28, stopw, 10], 2);
                 }
+                
             }
             
             //screw cap
@@ -445,17 +470,19 @@ module middle_hshape() {
     }
 }
 
-if($preview)
-    let($show_threads = 1)
+//if($preview)
+    //let($show_threads = 1)
 
         //*
         translate([33.8+5+14.2, 0, 69.9/2])
         rotate([0, 90, 0])
         group_motor();
+        //*/
 
         middle_hshape();
         //*/
 
+        //*
         translate([0, 0, 0])
         mount();
 
